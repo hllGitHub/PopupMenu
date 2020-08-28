@@ -20,6 +20,7 @@ public enum PopMenuDirection {
 public class PopMenuView: UIView {
   static let cellId = "cellId"
   static let fillColor = UIColor(hexString: "#202B43")
+  static let defaultAnimationDuration = 0.15
 
   weak var delegate: PopMenuViewDelegate?
   var font: UIFont = UIFont.systemFont(ofSize: 16)
@@ -62,7 +63,12 @@ public class PopMenuView: UIView {
     self.origin = origin
     self.cellHeight = size.height
 
-    let containerView = PopContainerView(frame: CGRect(x: origin.x, y: origin.y, width: size.width, height: size.height * CGFloat(dataArray.count) + 20), fillColor: PopMenuView.fillColor)
+    let containerWidth = size.width
+    let containerHeight = size.height * CGFloat(dataArray.count) + 20
+    let anchorPoint = CGPoint(x: 1, y: 0)
+
+    // 初始 `anchorPoint` 为 CGPoint(x: 0.5, y: 0.5)，调整锚点之后位置也需要调整
+    let containerView = PopContainerView(frame: CGRect(x: origin.x + containerWidth * (anchorPoint.x - 0.5), y: origin.y + containerHeight * (anchorPoint.y - 0.5), width: containerWidth, height: containerHeight), fillColor: PopMenuView.fillColor)
     containerView.backgroundColor = .clear
     addSubview(containerView)
     containerView.addSubview(tableView)
@@ -75,6 +81,7 @@ public class PopMenuView: UIView {
     ])
 
     self.containerView = containerView
+    self.containerView?.layer.anchorPoint = anchorPoint
     self.menus = dataArray
   }
 
@@ -94,14 +101,18 @@ extension PopMenuView: PopManager {
     window?.addSubview(self)
     let transform = menuContainerTransform ?? self.tableView.transform
 
-    UIView.animate(withDuration: 0.2) {
+    self.alpha = 0
+    UIView.animate(withDuration: PopMenuView.defaultAnimationDuration) {
       self.containerView?.transform = transform
+      self.alpha = 1
     }
   }
 
   func dismiss() {
-    UIView.animate(withDuration: 0.2, animations: {
+    self.alpha = 1
+    UIView.animate(withDuration: PopMenuView.defaultAnimationDuration, animations: {
       self.containerView?.transform = CGAffineTransform(scaleX: 0, y: 0)
+      self.alpha = 0
     }, completion: { _ in
       self.removeFromSuperview()
     })

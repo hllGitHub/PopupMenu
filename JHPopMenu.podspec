@@ -10,7 +10,7 @@ Pod::Spec.new do |spec|
   spec.author       = { "liangliang.hu" => "hllfj922@gmail.com" }
 
   spec.module_name = 'JHPopMenu'
-  spec.platform     = :ios, "11.0"
+  spec.platform     = :ios, "10.0"
   spec.swift_versions = ['4', '5']
 
   spec.source       = { :git => "https://github.com/hllGitHub/PopupMenu.git", :tag => "#{spec.version}" }
