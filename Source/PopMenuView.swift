@@ -17,23 +17,34 @@ public enum PopMenuDirection {
   case right
 }
 
+public struct PopMenuConfiguration {
+  var arrowSize: CGFloat = 20           // 箭头大小
+  var arrowMargin: CGFloat = 10         // 箭头和目标视图的距离
+
+  var animationDuration: Double = 0.15  // 动画时长
+  var cornerRadius: CGFloat = 6         // 菜单的圆角
+  var separatorColor: UIColor = .black  // 分割线颜色
+  var fillColor: UIColor = UIColor(hexString: "#202B43")       // 菜单的背景填充色
+
+  var itemFont: UIFont = UIFont.systemFont(ofSize: 16)         // 菜单项的字体
+  var itemHeight: CGFloat = 44          // 菜单项的高度
+  var itemTextColor: UIColor = .white   // 菜单项文本颜色
+}
+
 public class PopMenuView: UIView {
   static let cellId = "cellId"
-  static let fillColor = UIColor(hexString: "#202B43")
   static let defaultAnimationDuration = 0.15
 
+  var origin: CGPoint = .zero
+  var configuration: PopMenuConfiguration = PopMenuConfiguration()
   weak var delegate: PopMenuViewDelegate?
-  var font: UIFont = UIFont.systemFont(ofSize: 16)
+
   var direction: PopMenuDirection = .left
   var menus: [PopMenuItem] = [] {
     didSet {
       self.tableView.reloadData()
     }
   }
-  var origin: CGPoint = .zero
-  var cellHeight: CGFloat = 44
-  var separatorColor: UIColor = .black
-  var textColor: UIColor = .white
 
   lazy var tableView: UITableView = {
     let tableView = UITableView(frame: .zero, style: .plain)
@@ -55,20 +66,25 @@ public class PopMenuView: UIView {
     fatalError("init(coder:) has not been implemented")
   }
 
-  init(dataArray: [PopMenuItem], origin: CGPoint, size: CGSize, direction: PopMenuDirection) {
+  init(dataArray: [PopMenuItem], origin: CGPoint, size: CGSize, direction: PopMenuDirection, configuration: PopMenuConfiguration = PopMenuConfiguration()) {
+    self.configuration = configuration
+    self.direction = direction
+    self.origin = origin
+    self.menus = dataArray
+
     super.init(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
     self.backgroundColor = UIColor(white: 0.3, alpha: 0.2)
 
-    self.direction = direction
-    self.origin = origin
-    self.cellHeight = size.height
+    _setup(dataArray: dataArray, origin: origin, size: size, direction: direction)
+  }
 
+  private func _setup(dataArray: [PopMenuItem], origin: CGPoint, size: CGSize, direction: PopMenuDirection) {
     let containerWidth = size.width
-    let containerHeight = size.height * CGFloat(dataArray.count) + 20
+    let containerHeight = size.height * CGFloat(dataArray.count) + configuration.arrowSize
     let anchorPoint = CGPoint(x: 1, y: 0)
 
     // 初始 `anchorPoint` 为 CGPoint(x: 0.5, y: 0.5)，调整锚点之后位置也需要调整
-    let containerView = PopContainerView(frame: CGRect(x: origin.x + containerWidth * (anchorPoint.x - 0.5), y: origin.y + containerHeight * (anchorPoint.y - 0.5), width: containerWidth, height: containerHeight), fillColor: PopMenuView.fillColor)
+    let containerView = PopContainerView(frame: CGRect(x: origin.x + containerWidth * (anchorPoint.x - 0.5), y: origin.y + containerHeight * (anchorPoint.y - 0.5), width: containerWidth, height: containerHeight), fillColor: configuration.fillColor, cornerRadius: configuration.cornerRadius)
     containerView.backgroundColor = .clear
     addSubview(containerView)
     containerView.addSubview(tableView)
@@ -82,7 +98,6 @@ public class PopMenuView: UIView {
 
     self.containerView = containerView
     self.containerView?.layer.anchorPoint = anchorPoint
-    self.menus = dataArray
   }
 
   override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -102,7 +117,7 @@ extension PopMenuView: PopManager {
     let transform = menuContainerTransform ?? self.tableView.transform
 
     self.alpha = 0
-    UIView.animate(withDuration: PopMenuView.defaultAnimationDuration) {
+    UIView.animate(withDuration: configuration.animationDuration) {
       self.containerView?.transform = transform
       self.alpha = 1
     }
@@ -110,7 +125,7 @@ extension PopMenuView: PopManager {
 
   func dismiss() {
     self.alpha = 1
-    UIView.animate(withDuration: PopMenuView.defaultAnimationDuration, animations: {
+    UIView.animate(withDuration: configuration.animationDuration, animations: {
       self.containerView?.transform = CGAffineTransform(scaleX: 0, y: 0)
       self.alpha = 0
     }, completion: { _ in
@@ -133,7 +148,7 @@ extension PopMenuView: UITableViewDataSource {
   }
 
   public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    return cellHeight
+    return configuration.itemHeight
   }
 
   public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -144,6 +159,9 @@ extension PopMenuView: UITableViewDataSource {
     }
 
     cell.setItem(menu: menus[indexPath.row])
+    cell.textLabel?.font = configuration.itemFont
+    cell.textLabel?.textColor = configuration.itemTextColor
+    cell.backgroundColor = configuration.fillColor
     return cell
   }
 }
@@ -153,9 +171,6 @@ public extension UITableViewCell {
     imageView?.image = menu.icon
     imageView?.tintColor = .white
     textLabel?.text = menu.title
-    textLabel?.font = UIFont.systemFont(ofSize: 16)
-    textLabel?.textColor = .white
-    backgroundColor = PopMenuView.fillColor
     selectionStyle = .none
   }
 }

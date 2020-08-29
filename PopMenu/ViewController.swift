@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
   private lazy var menus = [
-    PopMenuItem(icon: UIImage(named: "iconNfc"), title: "Nfc"),
+    PopMenuItem(icon: UIImage(named: "iconNfc"), title: "NFC"),
     PopMenuItem(icon: UIImage(named: "iconScanning"), title: "扫一扫")
   ]
 

@@ -15,14 +15,21 @@ class PopContainerView: UIView {
     }
   }
 
+  var cornerRadius: CGFloat {
+    didSet {
+      setNeedsLayout()
+    }
+  }
+
   var direction: PopMenuDirection {
     didSet {
       setNeedsLayout()
     }
   }
 
-  init(frame: CGRect, fillColor: UIColor, direction: PopMenuDirection = .right) {
+  init(frame: CGRect, fillColor: UIColor, cornerRadius: CGFloat, direction: PopMenuDirection = .right) {
     self.fillColor = fillColor
+    self.cornerRadius = cornerRadius
     self.direction = direction
     super.init(frame: frame)
   }
@@ -44,7 +51,7 @@ class PopContainerView: UIView {
     trianglePath.addLine(to: CGPoint(x: startX + 10, y: startY))
     trianglePath.close()
 
-    let cornerRadius: CGFloat = 6
+    let cornerRadius: CGFloat = self.cornerRadius
 
     let squarePath = UIBezierPath(roundedRect: squareRect, cornerRadius: cornerRadius)
 
