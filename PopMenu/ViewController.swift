@@ -10,12 +10,19 @@ import UIKit
 
 class ViewController: UIViewController {
   private lazy var menus = [
-    PopMenuItem(icon: UIImage(named: "iconNfc"), title: "Nfc"),
+    PopMenuItem(icon: UIImage(named: "iconNfc"), title: "NFC"),
     PopMenuItem(icon: UIImage(named: "iconScanning"), title: "扫一扫")
   ]
 
   private lazy var menuView: PopMenuView = {
-    let menuView = PopMenuView(dataArray: menus, origin: CGPoint(x: view.frame.width - 152, y: 80), size: CGSize(width: 130, height: 44), direction: .left)
+    var configuration = PopMenuConfiguration()
+    configuration.itemFont = .boldSystemFont(ofSize: 17)
+    configuration.cornerRadius = 8
+    configuration.itemHeight = 44
+    configuration.animationDuration = 0.15
+    configuration.itemTextColor = .white
+
+    let menuView = PopMenuView(dataArray: menus, origin: CGPoint(x: view.frame.width - 152, y: 80), size: CGSize(width: 130, height: 44), direction: .left, configuration: configuration)
     menuView.delegate = self
     return menuView
   }()
