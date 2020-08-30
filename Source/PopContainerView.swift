@@ -39,7 +39,7 @@ class PopContainerView: UIView {
   }
 
   override func draw(_ rect: CGRect) {
-    let startX: CGFloat = rect.width + (direction == .left ? 25.0 : -25.0)
+    let startX: CGFloat = (direction == .left ? 25.0 : rect.width - 25.0)
     let startY: CGFloat = 10.0
 
     let bezierPath = UIBezierPath()

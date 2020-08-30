@@ -22,7 +22,7 @@ class ViewController: UIViewController {
     configuration.animationDuration = 0.15
     configuration.itemTextColor = .white
 
-    let menuView = PopMenuView(dataArray: menus, origin: CGPoint(x: view.frame.width - 152, y: 80), size: CGSize(width: 130, height: 44), direction: .left, configuration: configuration)
+    let menuView = PopMenuView(dataArray: menus, origin: CGPoint(x: view.frame.width - 42, y: 80), size: CGSize(width: 130, height: 44), direction: .right, configuration: configuration)
     menuView.delegate = self
     return menuView
   }()
