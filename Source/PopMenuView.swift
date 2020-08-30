@@ -81,10 +81,14 @@ public class PopMenuView: UIView {
   private func _setup(dataArray: [PopMenuItem], origin: CGPoint, size: CGSize, direction: PopMenuDirection) {
     let containerWidth = size.width
     let containerHeight = size.height * CGFloat(dataArray.count) + configuration.arrowSize
-    let anchorPoint = CGPoint(x: 1, y: 0)
+    let anchorPoint = direction == .left ? CGPoint(x: 0, y: 0) : CGPoint(x: 1, y: 0)
+
+    let offset = direction == .left ? -20 : -(containerWidth - 20)
+    let originX = origin.x + offset
+    let originY = origin.y
 
     // 初始 `anchorPoint` 为 CGPoint(x: 0.5, y: 0.5)，调整锚点之后位置也需要调整
-    let containerView = PopContainerView(frame: CGRect(x: origin.x + containerWidth * (anchorPoint.x - 0.5), y: origin.y + containerHeight * (anchorPoint.y - 0.5), width: containerWidth, height: containerHeight), fillColor: configuration.fillColor, cornerRadius: configuration.cornerRadius)
+    let containerView = PopContainerView(frame: CGRect(x: originX + containerWidth * (anchorPoint.x - 0.5), y: originY + containerHeight * (anchorPoint.y - 0.5), width: containerWidth, height: containerHeight), fillColor: configuration.fillColor, cornerRadius: configuration.cornerRadius, direction: direction)
     containerView.backgroundColor = .clear
     addSubview(containerView)
     containerView.addSubview(tableView)
