@@ -14,42 +14,54 @@ class ViewController: UIViewController {
     PopMenuItem(icon: UIImage(named: "iconScanning"), title: "扫一扫")
   ]
 
-  private lazy var menuView: PopMenuView = {
+  private lazy var rightMenuView: PopMenuView = {
     var configuration = PopMenuConfiguration()
     configuration.itemFont = .boldSystemFont(ofSize: 17)
     configuration.cornerRadius = 8
     configuration.itemHeight = 44
     configuration.animationDuration = 0.15
-    configuration.itemTextColor = .white
+    configuration.itemTextColor = .orange
 
     let menuView = PopMenuView(dataArray: menus, origin: CGPoint(x: view.frame.width - 42, y: 80), size: CGSize(width: 130, height: 44), direction: .right, configuration: configuration)
     menuView.delegate = self
     return menuView
   }()
 
-  @objc func openMenu() {
-    menuView.show()
+  private lazy var leftMenuView: PopMenuView = {
+    let menuView = PopMenuView(dataArray: menus, origin: CGPoint(x: 42, y: 80), size: CGSize(width: 130, height: 44), direction: .left)
+    menuView.delegate = self
+    return menuView
+  }()
+
+  @objc func openLeftMenu() {
+    leftMenuView.show()
+  }
+
+  @objc func openRightMenu() {
+    rightMenuView.show()
   }
 
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    self.navigationItem.title = "PopMenu Demo"
     setupNavigationBar()
   }
 
   private func setupNavigationBar() {
     self.navigationController?.navigationBar.isHidden = false
-    self.navigationController?.navigationBar.barTintColor = UIColor(hexString: "#B620E0")
-    self.navigationController?.navigationBar.tintColor = UIColor.white
 
-    let addButtonItem = UIBarButtonItem(image: UIImage(named: "iconAdd"), style: .plain, target: self, action: #selector(openMenu))
-    self.navigationItem.rightBarButtonItem = addButtonItem
+    let leftAddButtonItem = UIBarButtonItem(image: UIImage(named: "iconAdd"), style: .plain, target: self, action: #selector(openLeftMenu))
+    self.navigationItem.leftBarButtonItem = leftAddButtonItem
+
+    let rightAddButtonItem = UIBarButtonItem(image: UIImage(named: "iconAdd"), style: .plain, target: self, action: #selector(openRightMenu))
+    self.navigationItem.rightBarButtonItem = rightAddButtonItem
   }
 }
 
 extension ViewController: PopMenuViewDelegate {
   func popMenuView(_ popMenuView: PopMenuView, didSelectRowAt index: Int, item: PopMenuItem) {
-    print("点击了第 \(index) 个菜单, \(item.title)")
+    print("在 \(popMenuView) 中点击了第 \(index) 个菜单, \(item.title)")
   }
 }
 
