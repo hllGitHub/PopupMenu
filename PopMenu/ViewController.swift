@@ -30,6 +30,10 @@ class ViewController: UIViewController {
   private lazy var leftMenuView: PopMenuView = {
     let menuView = PopMenuView(dataArray: menus, origin: CGPoint(x: 42, y: 80), size: CGSize(width: 130, height: 44), direction: .left)
     menuView.delegate = self
+    // 可以选择 callback 的方式
+    menuView.clickCallback = {(_, index, item) in
+      print("第 \(index) 个 item, \(item)")
+    }
     return menuView
   }()
 
