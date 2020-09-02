@@ -27,10 +27,24 @@ class PopContainerView: UIView {
     }
   }
 
-  init(frame: CGRect, fillColor: UIColor, cornerRadius: CGFloat, direction: PopMenuDirection = .right) {
+  var arrowSize: CGFloat {
+    didSet {
+      setNeedsLayout()
+    }
+  }
+
+  var arrowOffset: CGFloat {
+    didSet {
+      setNeedsLayout()
+    }
+  }
+
+  init(frame: CGRect, fillColor: UIColor, cornerRadius: CGFloat, direction: PopMenuDirection = .right, arrowSize: CGFloat, arrowOffset: CGFloat) {
     self.fillColor = fillColor
     self.cornerRadius = cornerRadius
     self.direction = direction
+    self.arrowSize = arrowSize
+    self.arrowOffset = arrowOffset
     super.init(frame: frame)
   }
 
@@ -39,16 +53,16 @@ class PopContainerView: UIView {
   }
 
   override func draw(_ rect: CGRect) {
-    let startX: CGFloat = rect.width + (direction == .left ? 25.0 : -25.0)
-    let startY: CGFloat = 10.0
+    let startX: CGFloat = (direction == .left ? (arrowOffset - arrowSize * 0.5) : rect.width - (arrowOffset + arrowSize * 0.5))
+    let startY: CGFloat = arrowSize
 
     let bezierPath = UIBezierPath()
     let squareRect = CGRect(x: 0, y: startY, width: rect.width, height: rect.height - startY)
 
     let trianglePath = UIBezierPath()
     trianglePath.move(to: CGPoint(x: startX, y: startY))
-    trianglePath.addLine(to: CGPoint(x: startX + 5, y: startY - 8))
-    trianglePath.addLine(to: CGPoint(x: startX + 10, y: startY))
+    trianglePath.addLine(to: CGPoint(x: startX + arrowSize * 0.5, y: startY - (arrowSize - 2)))
+    trianglePath.addLine(to: CGPoint(x: startX + arrowSize, y: startY))
     trianglePath.close()
 
     let cornerRadius: CGFloat = self.cornerRadius

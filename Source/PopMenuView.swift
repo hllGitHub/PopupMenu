@@ -12,14 +12,17 @@ public protocol PopMenuViewDelegate: NSObjectProtocol {
   func popMenuView(_ popMenuView: PopMenuView, didSelectRowAt index: Int, item: PopMenuItem)
 }
 
+/// ClickCallback
+typealias PopMenuClickCallback = (_ popMenuView: PopMenuView, _ index: Int, _ item: PopMenuItem) -> Void
+
 public enum PopMenuDirection {
   case left
   case right
 }
 
 public struct PopMenuConfiguration {
-  var arrowSize: CGFloat = 20           // 箭头大小
-  var arrowMargin: CGFloat = 10         // 箭头和目标视图的距离
+  var arrowSize: CGFloat = 10           // 箭头大小
+  var arrowOffset: CGFloat = 20         // 箭头和目标视图的距离
 
   var animationDuration: Double = 0.15  // 动画时长
   var cornerRadius: CGFloat = 6         // 菜单的圆角
@@ -61,6 +64,7 @@ public class PopMenuView: UIView {
 
   var containerView: PopContainerView?
   var menuContainerTransform: CGAffineTransform?
+  var clickCallback: PopMenuClickCallback?
 
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
@@ -80,11 +84,22 @@ public class PopMenuView: UIView {
 
   private func _setup(dataArray: [PopMenuItem], origin: CGPoint, size: CGSize, direction: PopMenuDirection) {
     let containerWidth = size.width
-    let containerHeight = size.height * CGFloat(dataArray.count) + configuration.arrowSize
-    let anchorPoint = CGPoint(x: 1, y: 0)
+    let containerHeight = size.height * CGFloat(dataArray.count) + configuration.arrowSize * 2
+    let anchorPoint = direction == .left ? CGPoint(x: 0, y: 0) : CGPoint(x: 1, y: 0)
+
+    let offset = direction == .left ? -configuration.arrowOffset : -(containerWidth - configuration.arrowOffset)
+    let originX = origin.x + offset
+    let originY = origin.y
 
     // 初始 `anchorPoint` 为 CGPoint(x: 0.5, y: 0.5)，调整锚点之后位置也需要调整
-    let containerView = PopContainerView(frame: CGRect(x: origin.x + containerWidth * (anchorPoint.x - 0.5), y: origin.y + containerHeight * (anchorPoint.y - 0.5), width: containerWidth, height: containerHeight), fillColor: configuration.fillColor, cornerRadius: configuration.cornerRadius)
+    let containerView =
+      PopContainerView(
+        frame: CGRect(x: originX + containerWidth * (anchorPoint.x - 0.5), y: originY + containerHeight * (anchorPoint.y - 0.5), width: containerWidth, height: containerHeight),
+        fillColor: configuration.fillColor,
+        cornerRadius: configuration.cornerRadius,
+        direction: direction,
+        arrowSize: configuration.arrowSize,
+        arrowOffset: configuration.arrowOffset)
     containerView.backgroundColor = .clear
     addSubview(containerView)
     containerView.addSubview(tableView)
@@ -138,6 +153,7 @@ extension PopMenuView: UITableViewDelegate {
   public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
     self.delegate?.popMenuView(self, didSelectRowAt: indexPath.row, item: menus[indexPath.row])
+    clickCallback?(self, indexPath.row, menus[indexPath.row])
     dismiss()
   }
 }
