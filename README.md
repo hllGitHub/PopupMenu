@@ -6,7 +6,7 @@
 
 ## Using CocoaPods
 ``` ruby
-pod 'JHPopMenu'
+pod 'JHPopMenu', '~> 0.0.2beta'
 ```
 
 ## Usage

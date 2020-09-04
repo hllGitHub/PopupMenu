@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = "JHPopMenu"
-  spec.version      = "0.0.1beta"
+  spec.version      = "0.0.2beta"
   spec.summary      = "仿微信右上角弹出框"
   spec.description  = "这是一个轻量的库，仿微信右上角弹出框，会持续保持更新"
 
