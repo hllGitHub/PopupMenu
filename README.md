@@ -50,4 +50,7 @@ extension ViewController: PopMenuViewDelegate {
 }
 
 ```
+### Example
+![leftMenu](https://tva1.sinaimg.cn/large/007S8ZIlgy1gifsaw8muzj30pe1a00uc.jpg)
 
+![rightMenu](https://tva1.sinaimg.cn/large/007S8ZIlgy1gifsbatqrvj30pe1a0myu.jpg)
