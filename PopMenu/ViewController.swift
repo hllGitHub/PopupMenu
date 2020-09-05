@@ -22,13 +22,13 @@ class ViewController: UIViewController {
     configuration.animationDuration = 0.15
     configuration.itemTextColor = .orange
 
-    let menuView = PopMenuView(dataArray: menus, origin: CGPoint(x: view.frame.width - 42, y: 80), size: CGSize(width: 130, height: 44), direction: .right, configuration: configuration)
+    let menuView = PopMenuView(dataArray: menus, origin: CGPoint(x: view.frame.width - 38, y: UIApplication.shared.statusHeight + 34), size: CGSize(width: 130, height: 44), direction: .right, configuration: configuration)
     menuView.delegate = self
     return menuView
   }()
 
   private lazy var leftMenuView: PopMenuView = {
-    let menuView = PopMenuView(dataArray: menus, origin: CGPoint(x: 42, y: 80), size: CGSize(width: 130, height: 44), direction: .left)
+    let menuView = PopMenuView(dataArray: menus, origin: CGPoint(x: 38, y: UIApplication.shared.statusHeight + 34), size: CGSize(width: 130, height: 44), direction: .left)
     menuView.delegate = self
     // 可以选择 callback 的方式
     menuView.clickCallback = {(_, index, item) in

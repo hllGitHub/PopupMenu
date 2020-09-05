@@ -9,6 +9,31 @@
 pod 'JHPopMenu', '~> 0.0.2beta'
 ```
 
+## Doc
+
+### PopMenuConfiguration 支持多种自定义配置项
+
+``` swift
+public struct PopMenuConfiguration {
+  var arrowSize: CGFloat = 10           // 箭头大小
+  var arrowOffset: CGFloat = 20         // 箭头和目标视图的距离
+
+  var animationDuration: Double = 0.15  // 动画时长
+  var cornerRadius: CGFloat = 6         // 菜单的圆角
+  var separatorColor: UIColor = .black  // 分割线颜色
+  var fillColor: UIColor = UIColor(hexString: "#202B43")       // 菜单的背景填充色
+
+  var itemFont: UIFont = UIFont.systemFont(ofSize: 16)         // 菜单项的字体
+  var itemHeight: CGFloat = 44          // 菜单项的高度
+  var itemTextColor: UIColor = .white   // 菜单项文本颜色
+}
+```
+
+### 支持 delegate 和 block
+
+* 可以选择实现 `PopMenuViewDelegate` 的协议方法，从而获取点击项相关事件
+* 也可以选择使用 `PopMenuClickCallback`，即 `clickCallback` 直接调用
+
 ## Usage
 
 ``` swift
@@ -36,6 +61,10 @@ private lazy var menuView: PopMenuView = {
 
   let menuView = PopMenuView(dataArray: menus, origin: CGPoint(x: view.frame.width - 152, y: 80), size: CGSize(width: 130, height: 44), direction: .left, configuration: configuration)
   menuView.delegate = self
+  // 可以选择 callback 的方式
+    menuView.clickCallback = {(_, index, item) in
+      print("第 \(index) 个 item, \(item)")
+    }
   return menuView
 }()
 

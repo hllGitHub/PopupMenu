@@ -71,6 +71,12 @@ public class PopMenuView: UIView {
   }
 
   init(dataArray: [PopMenuItem], origin: CGPoint, size: CGSize, direction: PopMenuDirection, configuration: PopMenuConfiguration = PopMenuConfiguration()) {
+    // Check whether configuration is legal, eg: arrowOffset or arrowSize
+    assert(configuration.arrowOffset > 0, "The arrowOffset must be greater than zero.")
+    assert(configuration.arrowSize > 0, "The arrowSize must be greater than zero.")
+    assert(configuration.arrowOffset + configuration.arrowSize * 0.5 < size.height)
+    assert(configuration.arrowOffset - configuration.arrowSize * 0.5 > 0)
+    
     self.configuration = configuration
     self.direction = direction
     self.origin = origin
